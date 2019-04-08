@@ -15,9 +15,9 @@ Note I tried to do the code with various libraries being made but could not fix 
     };
 
   String messages[5] = 
-  {
-    "Hello there!", "General Kenobi", "You are a bold one", "Sith Lords are our speciality", "Hello world"
-  };
+    {
+      "Hello there!", "General Kenobi", "You are a bold one", "Sith Lords are our speciality", "Hello world"
+    };
   
   int j=49; //Note this MUST match the size of the dictionary entries minus 1! Larger means you will run out of the array bounds, smaller means you wont search each entry!
   int i=0;
@@ -35,15 +35,21 @@ Note I tried to do the code with various libraries being made but could not fix 
   
 void setup() {
   Serial.begin(9600);//makes the arduino able to output to the console in the topright of the screen.
-  
-  pinMode(13, OUTPUT);//Reset for the cells
+
+  pinMode(2, INPUT);//Button to move forward a message
+  pinMode(3, INPUT);//Button to move back a message
   pinMode(4, OUTPUT);//A on the 1-to-8 demultiplexor
   pinMode(5, OUTPUT);//B on the 1-to-8 demultiplexor
   pinMode(6, OUTPUT);//C on the 1-to-8 demultiplexor
   pinMode(7, OUTPUT);//Outputs to cell 1
   pinMode(8, OUTPUT);//Outputs to cell 2
-  pinMode(9, INPUT);//input to move backwards
-  pinMode(10, INPUT);//input to move forwards
+  pinMode(9, INPUT);//input to move backward
+  pinMode(10, INPUT);//input to move forward
+  pinMode(11, INPUT);//input to move backward one message
+  pinMode(12, INPUT);//input to move forward one message
+  pinMode(13, OUTPUT);//Reset for the cells
+
+  
 }
 //Note the Serial.print's are used for diagnostic and display purposes.
 
