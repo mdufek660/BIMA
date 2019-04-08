@@ -17,8 +17,8 @@ Note I tried to do the code with various libraries being made but could not fix 
   int j=49; //Note this MUST match the size of the dictionary entries minus 1! Larger means you will run out of the array bounds, smaller means you wont search each entry!
   int i=0;
   int k=2;
-  int delayValue=500;
-  String hello = "Hello there!";
+  int delayValue=5;
+  String hello = "Hello there! General Kenobi, you are a bold one.";
   int curState9=0, curState10=0, prevState9=0, prevState10=0;
   int timer=0;
   int pressed=0;
