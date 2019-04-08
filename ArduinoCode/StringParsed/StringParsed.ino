@@ -6,7 +6,7 @@ Special thanks to Pizzle on Discord for his help in troubleshooting a previous v
 Note I tried to do the code with various libraries being made but could not fix it. Will try to update that in later
 */
 int pin=0;
-    char dictionary[50][9]= //Please note if you change the first value, you MUST change j to match
+    char dictionary[50][9]= //Please note if you change the first value, you MUST change j to match minus 1
     {
       "A 100000", "B 101000", "C 110000", "D 110100", "E 100100", "F 111000", "G 111100", "H 101100", "I 011000", "J 011100", "K 100010",
       "L 101010", "M 110010", "N 110110", "O 100110", "P 111010", "Q 111110", "R 101110", "S 011010", "T 011110", "U 100011", "V 101011",
@@ -89,7 +89,6 @@ void loop() {
 void makeBraille(char c, char d){
   int i=0;
   int k=2;
-  int j=48;
   pinMode(pin, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
