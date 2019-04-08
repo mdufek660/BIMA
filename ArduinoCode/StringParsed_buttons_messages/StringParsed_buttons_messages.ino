@@ -14,7 +14,7 @@ Note I tried to do the code with various libraries being made but could not fix 
       "; 001010", "! 001110", "\" 001011", "- 000011", "' 000010", "{ 001111", "* 010111", "+ 000001"
     };
 
-  String messages[5] = 
+  String messages[20] = 
     {
       "Hello there!", "General Kenobi", "You are a bold one", "Sith Lords are our speciality", "He1l0 w0rld"
     };
@@ -76,7 +76,8 @@ Bail:
       delay(6);
       timer++;
     }
-    if(pressed==1)
+    
+    if(pressed==1) //backs n up so it can scroll back to previous characters
     {
       delay(400);
       if(check==false){counter=4;}
@@ -89,7 +90,8 @@ Bail:
       }
       check=false;
     }
-    if(pressed==2) {delay(400);}
+    
+    if(pressed==2) {delay(400);}//moves you forward
     
     pinMode(3, OUTPUT); //clear the cells with the next four lines
     digitalWrite(13,1);
