@@ -1,3 +1,10 @@
+/*
+Written on April 8th, 2019 by Michael Dufek
+This code is designed to test parsing the text into cells through use of a dictionary and if statements
+Note this code loops automatically with a short break between scrolls, future versions will impliment buttons
+Special thanks to Pizzle on Discord for his help in troubleshooting a previous version of the project~
+Note I tried to do the code with various libraries being made but could not fix it. Will try to update that in later
+*/
 int pin=0;
     char dictionary[50][9]= //Please note if you change the first value, you MUST change j to match
     {
