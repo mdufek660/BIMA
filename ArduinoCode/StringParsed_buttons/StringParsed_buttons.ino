@@ -19,6 +19,14 @@ Note I tried to do the code with various libraries being made but could not fix 
   int k=2;
   int delayValue=500;
   String hello = "Hello there!";
+  int curState9=0, curState10=0, prevState9=0, prevState10=0;
+  int timer=0;
+  int pressed=0;
+  int counter=0;
+  bool check;
+  
+//******************************************************************************************************************************************************************************
+
   
 void setup() {
   Serial.begin(9600);//makes the arduino able to output to the console in the topright of the screen.
@@ -32,7 +40,7 @@ void setup() {
   pinMode(9, INPUT);//input to move backwards
   pinMode(10, INPUT);//input to move forwards
 }
-
+//Note the Serial.print's are used for diagnostic and display purposes.
 
 //******************************************************************************************************************************************************************************
 
@@ -42,12 +50,38 @@ void loop() {
   int  n=0;
   while(n<hello.length()) //ensure we don't run out of bounds on the string
   {
+    while(pressed=0 && timer<1000) //wait for a timer of two seconds or a button press to change the current cell display
+    {
+      if(digitalRead(9)==1){pressed=1;}
+      if(digitalRead(10)==1){pressed=2;}
+      delay(2);
+      timer++;
+    }
+    if(pressed==1)
+    {
+      if(check==false){counter=4;}
+      else{counter=3;}
+      
+      while(n>=0 && counter!=0)
+      {
+        if(n!=0){n--;}
+        counter--;
+      }
+      check=false;
+      
+    }
+    
+    pressed=0;
+    timer=0;
+
+    
     if(isUpperCase(hello[n])) //check if I need the uppercase cell
     {
       Serial.println("Printing cap letter");
       makeBraille('+', hello[n]); //Send the braille cells for capital and the char
       n++;
      Serial.println(n);
+     check=true;
     }
     if(isDigit(hello[n]))//check if i need the digit cell
     {
@@ -55,6 +89,7 @@ void loop() {
       makeBraille('*', hello[n]); //Send the braille cells for number and the char
       n++;
       Serial.println(n);
+      check=true;
     }
     if(n<(hello.length()-1) && !(isUpperCase(hello[n])) && !(isDigit(hello[n]))) //Checks if the character is in bounds and isn't a number or caps. probably redundant but not near the program byte cap
     {
@@ -129,31 +164,31 @@ void makeBraille(char c, char d){
   while(i<j && found==false) //checks to see if it has found the char while also ensuring it doesn't run out of bounds if it hasn't.
   {
     
-    if(dictionary[i][0]==c) //check if the current location in the dictionary matches the current char
+      if(dictionary[i][0]==c) //check if the current location in the dictionary matches the current char
+      {
+        //Serial.println("Found letter: " + c);
+         while(k<8) //this while loop assembles a string from the char array to parse out later
+         {
+          value1 += dictionary[i][k]; 
+          k++;
+          found = true;
+         }
+       Serial.println(value1);
+      }
+      i++;
+    }//end the while.
+    
+    if(found == false) //Couldn't find it
     {
-      //Serial.println("Found letter: " + c);
-       while(k<8) //this while loop assembles a string from the char array to parse out later
-       {
-        value1 += dictionary[i][k]; 
-        k++;
-        found = true;
-       }
-     Serial.println(value1);
+      Serial.println("This was not the char we were looking for");
+      value1 = "111111";//this is the default for a character not found in the dictionary, all bumps
     }
-    i++;
-  }//end the while.
-  
-  if(found == false) //Couldn't find it
-  {
-    Serial.println("This was not the char we were looking for");
-    value1 = "111111";//this is the default for a character not found in the dictionary, all bumps
-  }
-  }
-  else
-  {
-    Serial.println("It is a space");
-    value1 = "000000";
-  }
+    }
+    else
+    {
+      Serial.println("It is a space");
+      value1 = "000000";
+     }
 
   i=0;
   k=2;
