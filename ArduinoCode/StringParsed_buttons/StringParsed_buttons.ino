@@ -23,7 +23,7 @@ Note I tried to do the code with various libraries being made but could not fix 
   int timer=0;
   int pressed=0;
   int counter=0;
-  bool check;
+  bool check, written;
   
 //******************************************************************************************************************************************************************************
 
@@ -50,11 +50,13 @@ void loop() {
   int  n=0;
   while(n<hello.length()) //ensure we don't run out of bounds on the string
   {
-    while(pressed=0 && timer<1000) //wait for a timer of two seconds or a button press to change the current cell display
+    pressed=0;
+    timer=0;
+    while(pressed==0 && timer<1000) //wait for a timer of two seconds or a button press to change the current cell display
     {
       if(digitalRead(9)==1){pressed=1;}
       if(digitalRead(10)==1){pressed=2;}
-      delay(2);
+      delay(6);
       timer++;
     }
     if(pressed==1)
@@ -70,28 +72,34 @@ void loop() {
       check=false;
       
     }
+    pinMode(3, OUTPUT); //clear the cells with the next four lines
+    digitalWrite(3,1);
+    delay(10);
+    digitalWrite(3,0);
     
     pressed=0;
     timer=0;
-
+    written=false;
     
-    if(isUpperCase(hello[n])) //check if I need the uppercase cell
+    if(isUpperCase(hello[n]) && written==false) //check if I need the uppercase cell
     {
       Serial.println("Printing cap letter");
       makeBraille('+', hello[n]); //Send the braille cells for capital and the char
       n++;
      Serial.println(n);
      check=true;
+     written=true;
     }
-    if(isDigit(hello[n]))//check if i need the digit cell
+    if(isDigit(hello[n]) && written==false)//check if i need the digit cell
     {
       Serial.println("Printing number");
       makeBraille('*', hello[n]); //Send the braille cells for number and the char
       n++;
       Serial.println(n);
       check=true;
+      written=true;
     }
-    if(n<(hello.length()-1) && !(isUpperCase(hello[n])) && !(isDigit(hello[n]))) //Checks if the character is in bounds and isn't a number or caps. probably redundant but not near the program byte cap
+    if(n<(hello.length()-1) && !(isUpperCase(hello[n])) && !(isDigit(hello[n])) && written==false) //Checks if the character is in bounds and isn't a number or caps. probably redundant but not near the program byte cap
     {
       if(!(isUpperCase(hello[n+1])) && !(isDigit(hello[n+1]))) //Checks if the char after the current wouldn't require two cells (ie caps or number)
       {
@@ -108,20 +116,17 @@ void loop() {
         n++;
         Serial.println(n);
       }
+    written=true;
     }
-    if(n==(hello.length()-1) && !(isUpperCase(hello[n])) && !(isDigit(hello[n]))) //checks to see if it is the end of the string and if so prints the last char and a space
+    if(n==(hello.length()-1) && !(isUpperCase(hello[n])) && !(isDigit(hello[n])) && written==false) //checks to see if it is the end of the string and if so prints the last char and a space
     {
       Serial.println("Printing one letter and space");
       makeBraille(hello[n], ' ');
       n++;
       Serial.println(n);
+      written=true;
     }
     
-    delay(2000);
-    pinMode(3, OUTPUT); //clear the cells with the next four lines
-    digitalWrite(3,1);
-    delay(10);
-    digitalWrite(3,0);
   }
 }
 
@@ -132,9 +137,6 @@ void loop() {
 void makeBraille(char c, char d){
   int i=0;
   int k=2;  
-  digitalWrite(3,1);
-  delay(100);
-  digitalWrite(3,0);
   digitalWrite(7,0);
   digitalWrite(8,0);
   
