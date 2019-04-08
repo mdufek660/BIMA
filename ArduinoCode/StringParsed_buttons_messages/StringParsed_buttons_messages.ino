@@ -7,21 +7,22 @@ Note I tried to do the code with various libraries being made but could not fix 
 */
   char dictionary[50][9]= //Please note if you change the first value, you MUST change j to match minus 1
     {
-      "A 100000", "B 101000", "C 110000", "D 110100", "E 100100", "F 111000", "G 111100", "H 101100", "I 011000", "J 011100", "K 100010",
-      "L 101010", "M 110010", "N 110110", "O 100110", "P 111010", "Q 111110", "R 101110", "S 011010", "T 011110", "U 100011", "V 101011",
-      "W 011101", "X 110011", "Y 110111", "Z 100111", "1 100000", "2 101000", "3 110000", "4 110100", "5 100100", "6 111000", "7 111100", 
-      "8 101100", "9 011000", "0 011100", ". 001101", ", 001000", ", 001000", "? 001000", "; 001010", "! 001110", "\" 001011", "- 000011",
-      "' 000010", "{ 001111", "* 010111", "+ 000001"
+      "A 100000", "B 101000", "C 110000", "D 110100", "E 100100", "F 111000", "G 111100", "H 101100", "I 011000", "J 011100", 
+      "K 100010", "L 101010", "M 110010", "N 110110", "O 100110", "P 111010", "Q 111110", "R 101110", "S 011010", "T 011110", 
+      "U 100011", "V 101011", "W 011101", "X 110011", "Y 110111", "Z 100111", "1 100000", "2 101000", "3 110000", "4 110100", 
+      "5 100100", "6 111000", "7 111100", "8 101100", "9 011000", "0 011100", ". 001101", ", 001000", ", 001000", "? 001000", 
+      "; 001010", "! 001110", "\" 001011", "- 000011", "' 000010", "{ 001111", "* 010111", "+ 000001"
     };
 
   String messages[5] = 
     {
-      "Hello there!", "General Kenobi", "You are a bold one", "Sith Lords are our speciality", "Hello world"
+      "Hello there!", "General Kenobi", "You are a bold one", "Sith Lords are our speciality", "He1l0 w0rld"
     };
   
   int j=49; //Note this MUST match the size of the dictionary entries minus 1! Larger means you will run out of the array bounds, smaller means you wont search each entry!
   int i=0;
   int k=2;
+  int p=4; //Note this MUST match the size of the messages entries minus 1!
   int delayValue=5;
   String hello = "Hello there!";
   int curState9=0, curState10=0, prevState9=0, prevState10=0;
@@ -45,11 +46,14 @@ void setup() {
   pinMode(8, OUTPUT);//Outputs to cell 2
   pinMode(9, INPUT);//input to move backward
   pinMode(10, INPUT);//input to move forward
-  pinMode(11, INPUT);//input to move backward one message
-  pinMode(12, INPUT);//input to move forward one message
   pinMode(13, OUTPUT);//Reset for the cells
-
-  
+/*
+  attachInterrupt(digitalPinToInterrupt(2), forwardMessage, RISING);
+  attachInterrupt(digitalPinToInterrupt(3), backMessage, RISING);
+*/
+  digitalWrite(13, 1);
+  delay(3);
+  digitalWrite(13,0);
 }
 //Note the Serial.print's are used for diagnostic and display purposes.
 
@@ -57,7 +61,7 @@ void setup() {
 
 
 void loop() {
-  
+Bail: 
   int  n=0;
   while(n<hello.length()) //ensure we don't run out of bounds on the string
   {
@@ -67,13 +71,16 @@ void loop() {
     {
       if(digitalRead(9)==1){pressed=1;}
       if(digitalRead(10)==1){pressed=2;}
+      if(digitalRead(2)==1){hello = forwardMessage(hello); Serial.println("returned with up a message"); goto Bail;}
+      if(digitalRead(3)==1){hello = backMessage(hello);Serial.println("returned with down a message"); goto Bail;}
       delay(6);
       timer++;
     }
     if(pressed==1)
     {
+      delay(400);
       if(check==false){counter=4;}
-      else{counter=3;}
+      else{counter=2;}
       
       while(n>=0 && counter!=0)
       {
@@ -81,8 +88,9 @@ void loop() {
         counter--;
       }
       check=false;
-      
     }
+    if(pressed==2) {delay(400);}
+    
     pinMode(3, OUTPUT); //clear the cells with the next four lines
     digitalWrite(13,1);
     delay(10);
@@ -101,6 +109,7 @@ void loop() {
      check=true;
      written=true;
     }
+    
     if(isDigit(hello[n]) && written==false)//check if i need the digit cell
     {
       Serial.println("Printing number");
@@ -110,6 +119,7 @@ void loop() {
       check=true;
       written=true;
     }
+    
     if(n<(hello.length()-1) && !(isUpperCase(hello[n])) && !(isDigit(hello[n])) && written==false) //Checks if the character is in bounds and isn't a number or caps. probably redundant but not near the program byte cap
     {
       if(!(isUpperCase(hello[n+1])) && !(isDigit(hello[n+1]))) //Checks if the char after the current wouldn't require two cells (ie caps or number)
@@ -358,14 +368,71 @@ char charUpper(char c)
 
 String setStringEqual(String temp1, String temp2)
 {
+  Serial.print("Setting hello equal to new string: ");
+  Serial.println(temp2);
   temp1="";
   int n=0;
   while(n<temp2.length())
   {
+    //Serial.println(temp1);
     temp1+=temp2[n];
+    n++;
   }
+  Serial.println(temp1);
   return(temp1);
 }
 
 
 //******************************************************************************************************************************************************************************
+
+
+bool areStringsEqual(String temp1, String temp2)
+{
+  Serial.println("Checking if equal");
+  bool answer=false;
+  bool check=true;
+  int n=0;
+  if(temp1.length() != temp2.length()){answer=false;}
+  else
+  {
+    while(check==true && n<temp1.length() && n<temp2.length())
+    {
+     if(temp1[n]== temp2[n]){check=true;}
+     else{check=false;}
+     n++;
+    }
+    if(check){answer=true;}
+  }
+  return(answer);
+}
+
+
+//******************************************************************************************************************************************************************************
+
+
+
+String forwardMessage(String hello)
+{
+  delay(1000);
+  Serial.println("Attempting to go up array");
+  int n=0;
+  while(!areStringsEqual(hello, messages[n]) && n<p)
+  {n++; /*Serial.println(n);*/}
+  if(n != p){hello = setStringEqual(hello, messages[n+1]); Serial.println("Got the new message");}
+  return(hello);
+}
+
+
+//******************************************************************************************************************************************************************************
+
+
+String backMessage(String hello)
+{
+  delay(1000);
+  Serial.println("Attempting to go down array");
+  int n=p;
+  while(!areStringsEqual(hello, messages[n]) && n>0)
+  {n--;/*Serial.println(n);*/}
+  if(n > 0){hello = setStringEqual(hello, messages[n-1]); Serial.println("Got the new message");}
+  return(hello);
+}
