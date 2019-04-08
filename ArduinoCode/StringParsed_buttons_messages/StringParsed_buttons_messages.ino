@@ -1,7 +1,7 @@
 /*
 Written on April 8th, 2019 by Michael Dufek
 This code is designed to test parsing the text into cells through use of a dictionary and if statements
-Note this code loops automatically with a short break between scrolls, future versions will impliment buttons
+Note this code loops automatically with a short break between scrolls, future versions will implement buttons
 Special thanks to Pizzle on Discord for his help in troubleshooting a previous version of the project~
 Note I tried to do the code with various libraries being made but could not fix it. Will try to update that in later
 */
