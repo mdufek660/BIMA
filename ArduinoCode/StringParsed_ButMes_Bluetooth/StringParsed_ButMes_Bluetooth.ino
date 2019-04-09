@@ -16,7 +16,7 @@ Note I tried to do the code with various libraries being made but could not fix 
 
   String messages[20] = 
     {
-      "Hello there!", "General Kenobi", "You are a bold one", "Sith Lords are our speciality", "He1l0 w0rld"
+      "oi"
     };
   
   int j=49; //Note this MUST match the size of the dictionary entries minus 1! Larger means you will run out of the array bounds, smaller means you wont search each entry!
@@ -24,19 +24,20 @@ Note I tried to do the code with various libraries being made but could not fix 
   int k=2;
   int p=4; //Note this MUST match the size of the messages entries minus 1!
   int delayValue=200;
-  String hello = "Hello there!";
+  String hello = "oi";
   int curState9=0, curState10=0, prevState9=0, prevState10=0;
   int timer=0;
   int pressed=0;
   int counter=0;
   bool check, written;
   int potValue;
-  
+  String input;
+  bool alreadyIn;
 //******************************************************************************************************************************************************************************
 
   
 void setup() {
-  Serial.begin(9600);//makes the arduino able to output to the console in the topright of the screen.
+  Serial.begin(38400);//makes the arduino able to output to the console in the topright of the screen.
   
   pinMode(A0, INPUT);//input to move backward
   pinMode(A1, INPUT);//input to move forward
@@ -67,6 +68,18 @@ void setup() {
 void loop() {
 Bail: 
   int  n=0;
+  alreadyIn = false;
+  if(Serial.available() > 0)
+  {
+    input = Serial.read();
+    n=0;
+    while(n<20 && alreadyIn == false)
+    {
+      if(areStringsEqual(input, messages[n])) {alreadyIn = true;}
+      if(areStringsEqual(messages[n], "")){messages[n] = input; alreadyIn=true;}
+      if(n==19){messages[0] = input;}
+    }
+  }
   while(n<hello.length()) //ensure we don't run out of bounds on the string
   {
     pressed=0;
