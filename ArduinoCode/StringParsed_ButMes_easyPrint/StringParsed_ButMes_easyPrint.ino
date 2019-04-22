@@ -31,7 +31,7 @@ Note I tried to do the code with various libraries being made but could not fix 
   int counter=0;
   bool check, written;
   int potValue;
-  byte address = B000;
+  int address = 000;
   String addressString = "";
 //******************************************************************************************************************************************************************************
 
@@ -258,7 +258,7 @@ void makeBraille(char c, char d){
     value2 = "000000";
   }
   int l = 0;
-  address = B000;
+  
   
   /*
   digitalWrite(4,0);//Sets A
@@ -277,18 +277,36 @@ void makeBraille(char c, char d){
 
   while(l<6)
   {
-    addressString=address;
-    digitalWrite(4, charToInt(addressString[2])); 
-    digitalWrite(5, charToInt(addressString[1])); 
-    digitalWrite(6, charToInt(addressString[0])); 
+    address=makeAddress(l);
+    addressString=address; //sets the string value for the address pins. Value and size of the address is explained in its method.
+    /*
+    Serial.print("Address is: ");
+    Serial.println(address);
+    Serial.print("Address string is: ");
+    Serial.println(addressString);
+    //blah blah the above four lines are diagnostic
+    */
+    if(addressString[3]=='0'){digitalWrite(4,0);} //this if-else controls whether the LSB of the address is a 1 or a 0 
+    else{digitalWrite(4,1);}
+    
+    if(addressString[2]=='0'){digitalWrite(5,0);} //this if-else controls whether the biddle bit of the address is a 1 or a 0
+    else{digitalWrite(5,1);}
+    
+    if(addressString[1]=='0'){digitalWrite(6,0);} //this if-else controls whether the MSB of the address is a 1 or a 0
+    else{digitalWrite(6,1);}
+    
     delay(delayValue);
-    digitalWrite(7, charToInt(value1[1]));
-    digitalWrite(8, charToInt(value2[1]));
+    
+    if(value1[l]=='0'){digitalWrite(7,0);}//this if-else controls whether the current cell location is a 1 or a 0 based on the string location
+    else{digitalWrite(7,1);}
+    if(value2[l]=='0'){digitalWrite(8,0);}//this if-else controls whether the current cell location is a 1 or a 0 based on the string location
+    else{digitalWrite(8,1);}
+    
     delay(delayValue);
-    digitalWrite(7,0);
+    
+    digitalWrite(7,0);//Reset the two outputs to avoid contamination
     digitalWrite(8,0);
     l++;
-    address++;
   }
 }
 
@@ -405,20 +423,18 @@ String backMessage(String hello)
 
 //******************************************************************************************************************************************************************************
 
-
-int charToInt(char c) //Checks if a char is an int and returns the value of the char. Note a non-char will return -1
+/* Okay makeAddress takes in an integer from 0-5 and returns the important address.
+ * Normally the address would be three bits, ABC. However, due to the system rounding my ints, I had to throw a significan figure out to the left of the address to keep the code from rounding
+ * In effect, the address is 1CBA where the 1 is ignored, and CBA form the correct address the system needs.
+ */
+int makeAddress(int n)
 {
-  int returnInt=-1;
-
-  if(c=='0'){returnInt=0;}
-  if(c=='1'){returnInt=1;}
-  if(c=='2'){returnInt=2;}
-  if(c=='3'){returnInt=3;}
-  if(c=='4'){returnInt=4;}
-  if(c=='5'){returnInt=5;}
-  if(c=='6'){returnInt=6;}
-  if(c=='7'){returnInt=7;}
-  if(c=='8'){returnInt=8;}
-  if(c=='9'){returnInt=9;}
-  return(returnInt);
+  int address=0;
+  if(n==0){address=1000;}
+  if(n==1){address=1001;}
+  if(n==2){address=1010;}
+  if(n==3){address=1011;}
+  if(n==4){address=1100;}
+  if(n==5){address=1101;}
+  return(address);
 }
