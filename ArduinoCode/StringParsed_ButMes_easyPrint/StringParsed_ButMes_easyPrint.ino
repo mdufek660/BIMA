@@ -31,7 +31,8 @@ Note I tried to do the code with various libraries being made but could not fix 
   int counter=0;
   bool check, written;
   int potValue;
-  
+  byte address = B000;
+  String addressString = "";
 //******************************************************************************************************************************************************************************
 
   
@@ -257,7 +258,9 @@ void makeBraille(char c, char d){
     value2 = "000000";
   }
   int l = 0;
+  address = B000;
   
+  /*
   digitalWrite(4,0);//Sets A
   digitalWrite(5,0);//Sets B
   digitalWrite(6,0);//Sets C
@@ -270,71 +273,23 @@ void makeBraille(char c, char d){
   delay(delayValue);
   digitalWrite(7,0);//Clear output 1
   digitalWrite(8,0);//Clear output 2
-  
-  digitalWrite(4,1);
-  digitalWrite(5,0);
-  digitalWrite(6,0);
-  delay(delayValue);
-  if(value1[l]=='0'){digitalWrite(7,0);}
-  else{digitalWrite(7,1);}
-  if(value2[l]=='0'){digitalWrite(8,0);}
-  else{digitalWrite(8,1);}
-  l++;
-  delay(delayValue);
-  digitalWrite(7,0);
-  digitalWrite(8,0);
-  
-  digitalWrite(4,0);
-  digitalWrite(5,1);
-  digitalWrite(6,0);
-  delay(delayValue);
-  if(value1[l]=='0'){digitalWrite(7,0);}
-  else{digitalWrite(7,1);}
-  if(value2[l]=='0'){digitalWrite(8,0);}
-  else{digitalWrite(8,1);}
-  l++;
-  delay(delayValue);
-  digitalWrite(7,0);
-  digitalWrite(8,0);
-  
-  digitalWrite(4,1);
-  digitalWrite(5,1);
-  digitalWrite(6,0);
-  delay(delayValue);
-  if(value1[l]=='0'){digitalWrite(7,0);}
-  else{digitalWrite(7,1);}
-  if(value2[l]=='0'){digitalWrite(8,0);}
-  else{digitalWrite(8,1);}
-  l++;
-  delay(delayValue);
-  digitalWrite(7,0);
-  digitalWrite(8,0);
-  
-  digitalWrite(4,0);
-  digitalWrite(5,0);
-  digitalWrite(6,1);
-  delay(delayValue);
-  if(value1[l]=='0'){digitalWrite(7,0);}
-  else{digitalWrite(7,1);}
-  if(value2[l]=='0'){digitalWrite(8,0);}
-  else{digitalWrite(8,1);}
-  l++;
-  delay(delayValue);
-  digitalWrite(7,0);
-  digitalWrite(8,0);
-  
-  digitalWrite(4,1);
-  digitalWrite(5,0);
-  digitalWrite(6,1);
-  delay(delayValue);
-  if(value1[l]=='0'){digitalWrite(7,0);}
-  else{digitalWrite(7,1);}
-  if(value2[l]=='0'){digitalWrite(8,0);}
-  else{digitalWrite(8,1);}
-  l++;
-  delay(delayValue);
-  digitalWrite(7,0);
-  digitalWrite(8,0);
+  */
+
+  while(l<6)
+  {
+    addressString=address;
+    digitalWrite(4, charToInt(addressString[2])); 
+    digitalWrite(5, charToInt(addressString[1])); 
+    digitalWrite(6, charToInt(addressString[0])); 
+    delay(delayValue);
+    digitalWrite(7, charToInt(value1[1]));
+    digitalWrite(8, charToInt(value2[1]));
+    delay(delayValue);
+    digitalWrite(7,0);
+    digitalWrite(8,0);
+    l++;
+    address++;
+  }
 }
 
 
@@ -445,4 +400,25 @@ String backMessage(String hello)
   {n--;/*Serial.println(n);*/}
   if(n > 0){hello = setStringEqual(hello, messages[n-1]); Serial.println("Got the new message");}
   return(hello);
+}
+
+
+//******************************************************************************************************************************************************************************
+
+
+int charToInt(char c) //Checks if a char is an int and returns the value of the char. Note a non-char will return -1
+{
+  int returnInt=-1;
+
+  if(c=='0'){returnInt=0;}
+  if(c=='1'){returnInt=1;}
+  if(c=='2'){returnInt=2;}
+  if(c=='3'){returnInt=3;}
+  if(c=='4'){returnInt=4;}
+  if(c=='5'){returnInt=5;}
+  if(c=='6'){returnInt=6;}
+  if(c=='7'){returnInt=7;}
+  if(c=='8'){returnInt=8;}
+  if(c=='9'){returnInt=9;}
+  return(returnInt);
 }
