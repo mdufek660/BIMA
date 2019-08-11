@@ -155,14 +155,12 @@ public class Client extends JFrame{
      
    try
          {
-             JOptionPane.showMessageDialog(null, "Here I am");
              FileWriter logFile = new FileWriter(fileName, true); //the true will append the new data
            
              logFile.append("===+=== " +messageCount );
              logFile.append(System.getProperty( "line.separator" ));
              logFile.append("\n" + userName+ " - "+ message+ "\n");
              logFile.append(System.getProperty( "line.separator" ));
-             JOptionPane.showMessageDialog(null, "Here I go");
              logFile.close();
          }
          catch(IOException ioe)
