@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.Object.*;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -35,7 +36,8 @@ public class Client extends JFrame{
  private String serverIP;
  private Socket connection;
  
- String logDirectory = "E:\\BIMA\\logs\\"; 
+ String logDirectory = "E:\\BIMA\\logs\\";
+ FileUtils.cleanDirectory(logDirectory);  
  public static final String DATE_FORMAT_NOW = "yyyy_MM_dd_HH_mm_ss";
  String userName = "Default";
  long messageCount = 0;
