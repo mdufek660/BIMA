@@ -1,0 +1,25 @@
+===+=== 0
+
+ADMIN- 
+You are now connected!
+
+===+=== 1
+
+ADMIN- hello there
+
+===+=== 2
+
+m - General Kenobi!
+
+===+=== 3
+
+m - You are a bold one
+
+===+=== 4
+
+ADMIN- Sith Lords are our speciality
+
+===+=== 5
+
+ADMIN- END
+

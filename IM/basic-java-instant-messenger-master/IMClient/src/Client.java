@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.io.File;
-import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -34,19 +34,21 @@ public class Client extends JFrame{
  private String message = "";
  private String serverIP;
  private Socket connection;
-
+ 
+ String logDirectory = "E:\\BIMA\\logs\\"; 
  public static final String DATE_FORMAT_NOW = "yyyy_MM_dd_HH_mm_ss";
  String userName = "Default";
  long messageCount = 0;
- File chatLog = new File("E:\\BIMA\\ChatHistory\\" + now());
- BufferedWriter outputText = null;
- outputText = new BufferedWriter(new FileWriter(file));
  
- public static String now() 
+ 
+ String fileName = logDirectory+dateAndTime()+".txt";
+ File logs = new File(fileName);
+ 
+ public static String dateAndTime() 
  {
-   Calendar cal = Calendar.getInstance();
-   SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
-   return sdf.format(cal.getTime());
+   Calendar calendar = Calendar.getInstance();
+   SimpleDateFormat date = new SimpleDateFormat(DATE_FORMAT_NOW);
+   return date.format(calendar.getTime());
 }
  
  public Client(String host) {
@@ -101,16 +103,36 @@ public class Client extends JFrame{
 
  private void whileChatting() throws IOException {
   ableToType(true);
+  FileWriter logFile = null;
   do {
    try {
     message = (String) input.readObject();
     showMessage("\n" + message);
-    messageCount++;
-
-   } catch (ClassNotFoundException classNotFoundException) {
+    
+    
+         try
+         {
+             logFile = new FileWriter(fileName, true); //the true will append the new data
+           
+             logFile.append("===+=== " +messageCount );
+             logFile.append(System.getProperty( "line.separator" ));
+             logFile.append("\n" + message+ "\n");
+             logFile.append(System.getProperty( "line.separator" ));
+             logFile.close();
+         }
+         catch(IOException ioe)
+         {
+           System.err.println("IOException: " + ioe.getMessage());
+         }
+         messageCount++;
+       
+    
+   } 
+   catch (ClassNotFoundException classNotFoundException) 
+   {
     showMessage("\nDont know ObjectType!");
    }
-  } while (!message.equals("\nADMIN - END"));
+  } while (!message.equals("ADMIN- END"));
  }
 
  private void closeCrap() {
@@ -129,11 +151,30 @@ public class Client extends JFrame{
   try{
    output.writeObject(userName+ " - "+ message);
    output.flush();
+   
+     
+   try
+         {
+             JOptionPane.showMessageDialog(null, "Here I am");
+             FileWriter logFile = new FileWriter(fileName, true); //the true will append the new data
+           
+             logFile.append("===+=== " +messageCount );
+             logFile.append(System.getProperty( "line.separator" ));
+             logFile.append("\n" + userName+ " - "+ message+ "\n");
+             logFile.append(System.getProperty( "line.separator" ));
+             JOptionPane.showMessageDialog(null, "Here I go");
+             logFile.close();
+         }
+         catch(IOException ioe)
+         {
+           System.err.println("IOException: " + ioe.getMessage());
+         }
+         messageCount++;
+   
    showMessage("\n" + userName+ " - "+message);
   }catch(IOException ioException){
    chatBox.append("\nSomething is messed up!");
   }
-  
  }
  
  private void showMessage(final String m){

@@ -1,0 +1,22 @@
+===+=== 1
+
+ADMIN- 
+You are now connected!
+===+=== 2
+
+ADMIN- hi
+===+=== 3
+
+ADMIN- Are we working
+===+=== 4
+
+ADMIN- Please?
+===+=== 5
+
+ADMIN- I bed you
+===+=== 6
+
+ADMIN- beg
+===+=== 7
+
+ADMIN- END
