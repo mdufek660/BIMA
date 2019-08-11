@@ -1,0 +1,9 @@
+11 Aug 2019 3:24:01 GMT: Log 'EclipseCompiler.txt' opened: 11 Aug 2019 3:24:01 GMT with name E:\BIMA\IM\basic-java-instant-messenger-master\IMClient\src\EclipseCompiler.txt
+11 Aug 2019 3:24:08 GMT: diagnostics = javax.tools.DiagnosticCollector@f8349
+fileManager = org.eclipse.jdt.internal.compiler.tool.EclipseFileManager@a13094
+fileObjects = [E:\BIMA\IM\basic-java-instant-messenger-master\IMClient\src\Client.java]
+11 Aug 2019 3:24:08 GMT: Calling 'org.eclipse.jdt.internal.compiler.tool.EclipseCompiler@1e24655' with options [-Xlint:deprecation, -Xlint:unchecked, -g, -classpath, E:\BIMA\IM\basic-java-instant-messenger-master\IMClient\src;C:\Users\Michael\Downloads\drjava-beta-20160913-225446.exe]
+11 Aug 2019 3:24:09 GMT: Compiler call returned
+11 Aug 2019 3:24:09 GMT: Processing diagnostic org.eclipse.jdt.internal.compiler.tool.EclipseCompilerImpl$3$2@e8b1d5
+11 Aug 2019 3:24:09 GMT:  Kind = WARNING
+11 Aug 2019 3:24:09 GMT: Name = E:\BIMA\IM\basic-java-instant-messenger-master\IMClient\src\Client.java LineNo = 17 ColNo = 14 Msg = 'The serializable class Client does not declare a static final serialVersionUID field of type long'
