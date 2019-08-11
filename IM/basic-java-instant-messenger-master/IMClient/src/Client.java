@@ -1,3 +1,10 @@
+/*
+
+Big shout out to haxxorsid for his basic java instant messenger at the following link:
+https://github.com/haxxorsid/basic-java-instant-messenger
+For setting up the framework of this IM service
+
+*/
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
