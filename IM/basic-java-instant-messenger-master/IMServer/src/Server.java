@@ -85,7 +85,7 @@ public class Server extends JFrame {
  }
 
  public void whileChatting() throws IOException {
-  String message = "\nYou are now connected!";
+  String message = "You are now connected!";
   sendMessage(message);
   ableToType(true);
   do {

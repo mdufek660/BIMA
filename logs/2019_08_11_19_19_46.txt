@@ -1,0 +1,29 @@
+===+=== 0
+
+ADMIN- 
+You are now connected!
+
+===+=== 1
+
+michael - hello there
+
+===+=== 2
+
+ADMIN- hey long time no see
+
+===+=== 3
+
+ADMIN- How are you doing?
+
+===+=== 4
+
+michael - Im well, you?
+
+===+=== 5
+
+ADMIN- Gotta go, catch up later
+
+===+=== 6
+
+ADMIN- END
+

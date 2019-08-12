@@ -1,3 +1,10 @@
+/*
+
+Big shout out to haxxorsid for his basic java instant messenger at the following link:
+https://github.com/haxxorsid/basic-java-instant-messenger
+For setting up the framework of this IM service
+
+*/
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +14,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import javax.swing.JOptionPane;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.io.File;
+import java.io.FileWriter;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -14,114 +26,170 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class Client extends JFrame {
-	private JTextField userMessage;
-	private JTextArea chatBox;
-	private ObjectOutputStream output;
-	private ObjectInputStream input;
-	private String message = "";
-	private String serverIP;
-	private Socket connection;
+public class Client extends JFrame{ 
+ private JTextField userMessage;
+ private JTextArea chatBox;
+ private ObjectOutputStream output;
+ private ObjectInputStream input;
+ private String message = "";
+ private String serverIP;
+ private Socket connection;
+ 
+ String logDirectory = "E:\\BIMA\\logs\\";
+ public static final String DATE_FORMAT_NOW = "yyyy_MM_dd_HH_mm_ss";
+ String userName = "Default";
+ long messageCount = 0;
+ 
+ 
+ String fileName = logDirectory+dateAndTime()+".txt";
+ File logs = new File(fileName);
+ 
+ public static String dateAndTime() 
+ {
+   Calendar calendar = Calendar.getInstance();
+   SimpleDateFormat date = new SimpleDateFormat(DATE_FORMAT_NOW);
+   return date.format(calendar.getTime());
+}
+ 
+ public Client(String host) {
+  super("Client!");
+  serverIP = host;
+  userName = JOptionPane.showInputDialog("What is your chosen user name?");
+  userMessage = new JTextField();
+  userMessage.setEditable(false);
+  userMessage.addActionListener(new ActionListener() {
+   public void actionPerformed(ActionEvent event) {
+    sendMessage(event.getActionCommand(), userName);
+    userMessage.setText("");
+   }
+  });
+  add(userMessage, BorderLayout.NORTH);
+  chatBox = new JTextArea();
+  add(new JScrollPane(chatBox), BorderLayout.CENTER);
+  setSize(300, 180);
+  setVisible(true);
+ }
 
-	public Client(String host) {
-		super("Client!");
-		serverIP = host;
-		userMessage = new JTextField();
-		userMessage.setEditable(false);
-		userMessage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				sendMessage(event.getActionCommand());
-				userMessage.setText("");
+ public void startRunning() {
 
-			}
-		});
-		add(userMessage, BorderLayout.NORTH);
-		chatBox = new JTextArea();
-		add(new JScrollPane(chatBox), BorderLayout.CENTER);
-		setSize(300, 180);
-		setVisible(true);
+  try {
+   connectToServer();
+   setupStreams();
+   whileChatting();
+  } catch (EOFException eofException) {
+   showMessage("\n Client terminated the connection");
 
-	}
+  } catch (IOException ioException) {
+   ioException.printStackTrace();
+  } finally {
+   closeCrap();
+  }
+ }
 
-	public void startRunning() {
+ private void connectToServer() throws IOException {
+  showMessage("Attempting connection");
+  connection = new Socket(InetAddress.getByName(serverIP), 6789);
+  showMessage("\nConnected to" + connection.getInetAddress().getHostName());
 
-		try {
-			connectToServer();
-			setupStreams();
-			whileChatting();
-		} catch (EOFException eofException) {
-			showMessage("\n Client terminated the connection");
+ }
 
-		} catch (IOException ioException) {
-			ioException.printStackTrace();
-		} finally {
-			closeCrap();
-		}
-	}
+ private void setupStreams() throws IOException {
+  output = new ObjectOutputStream(connection.getOutputStream());
+  output.flush();
+  input = new ObjectInputStream(connection.getInputStream());
+  showMessage("\nStreams are now good to go!");
 
-	private void connectToServer() throws IOException {
-		showMessage("Attempting connection");
-		connection = new Socket(InetAddress.getByName(serverIP), 6789);
-		showMessage("\nConnected to" + connection.getInetAddress().getHostName());
+ }
 
-	}
+ private void whileChatting() throws IOException {
+  ableToType(true);
+  FileWriter logFile = null;
+  do {
+   try {
+    message = (String) input.readObject();
+    showMessage("\n" + message);
+    
+    
+         try
+         {
+             logFile = new FileWriter(fileName, true); //the true will append the new data
+             System.out.println(message);
+             if(!message.equals("ADMIN- You are now connected!") && !message.equals("ADMIN- END"))
+             {
+               logFile.append("===+=== " +messageCount );
+               logFile.append(System.getProperty( "line.separator" ));
+               logFile.append("\n" + message+ "\n");
+               logFile.append(System.getProperty( "line.separator" ));
+               logFile.close();
+               messageCount++;
+             }
+         }
+         catch(IOException ioe)
+         {
+           System.err.println("IOException: " + ioe.getMessage());
+         }
+       
+    
+   } 
+   catch (ClassNotFoundException classNotFoundException) 
+   {
+    showMessage("\nDont know ObjectType!");
+   }
+  } while (!message.equals("ADMIN- END"));
+ }
 
-	private void setupStreams() throws IOException {
-		output = new ObjectOutputStream(connection.getOutputStream());
-		output.flush();
-		input = new ObjectInputStream(connection.getInputStream());
-		showMessage("\nStreams are now good to go!");
-
-	}
-
-	private void whileChatting() throws IOException {
-		ableToType(true);
-		do {
-			try {
-				message = (String) input.readObject();
-				showMessage("\n" + message);
-
-			} catch (ClassNotFoundException classNotFoundException) {
-				showMessage("\nDont know ObjectType!");
-			}
-		} while (!message.equals("\nADMIN - END"));
-	}
-
-	private void closeCrap() {
-		showMessage("\nClosing down!");
-		ableToType(false);
-		try {
-			output.close();
-			input.close();
-			connection.close();
-		} catch (IOException ioException) {
-			ioException.printStackTrace();
-		}
-	}
-	
-	private void sendMessage(String message){
-		try{
-			output.writeObject("USER - "+ message);
-			output.flush();
-			showMessage("\nUSER - "+message);
-		}catch(IOException ioException){
-			chatBox.append("\nSomething is messed up!");
-		}
-		
-	}
-	
-	private void showMessage(final String m){
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				chatBox.append(m);
-			}
-		});
-	}
-	private void ableToType(final boolean tof){
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run(){
-				userMessage.setEditable(tof);
-			}
-		});
-	}
+ private void closeCrap() {
+  showMessage("\nClosing down!");
+  ableToType(false);
+  try {
+   output.close();
+   input.close();
+   connection.close();
+  } catch (IOException ioException) {
+   ioException.printStackTrace();
+  }
+ }
+ 
+ private void sendMessage(String message, String userName){
+  try{
+   output.writeObject(userName+ " - "+ message);
+   output.flush();
+   
+     
+   try
+         {
+             FileWriter logFile = new FileWriter(fileName, true); //the true will append the new data
+           
+             logFile.append("===+=== " +messageCount );
+             logFile.append(System.getProperty( "line.separator" ));
+             logFile.append("\n" + userName+ " - "+ message+ "\n");
+             logFile.append(System.getProperty( "line.separator" ));
+             logFile.close();
+         }
+         catch(IOException ioe)
+         {
+           System.err.println("IOException: " + ioe.getMessage());
+         }
+         messageCount++;
+   
+   showMessage("\n" + userName+ " - "+message);
+  }catch(IOException ioException){
+   chatBox.append("\nSomething is messed up!");
+  }
+ }
+ 
+ private void showMessage(final String m){
+  SwingUtilities.invokeLater(new Runnable(){
+   public void run(){
+    chatBox.append(m);
+   }
+  });
+ }
+ private void ableToType(final boolean tof){
+  SwingUtilities.invokeLater(new Runnable(){
+   public void run(){
+    userMessage.setEditable(tof);
+   }
+  });
+ }
 }

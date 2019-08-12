@@ -19,7 +19,6 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.FileWriter;
-import java.lang.Object.*;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -37,7 +36,6 @@ public class Client extends JFrame{
  private Socket connection;
  
  String logDirectory = "E:\\BIMA\\logs\\";
- FileUtils.cleanDirectory(logDirectory);  
  public static final String DATE_FORMAT_NOW = "yyyy_MM_dd_HH_mm_ss";
  String userName = "Default";
  long messageCount = 0;
@@ -115,18 +113,21 @@ public class Client extends JFrame{
          try
          {
              logFile = new FileWriter(fileName, true); //the true will append the new data
-           
-             logFile.append("===+=== " +messageCount );
-             logFile.append(System.getProperty( "line.separator" ));
-             logFile.append("\n" + message+ "\n");
-             logFile.append(System.getProperty( "line.separator" ));
-             logFile.close();
+             System.out.println(message);
+             if(!message.equals("ADMIN- You are now connected!") && !message.equals("ADMIN- END"))
+             {
+               logFile.append("|" +messageCount );
+               logFile.append(System.getProperty( "line.separator" ));
+               logFile.append("\n" + message+ "\n");
+               logFile.append(System.getProperty( "line.separator" ));
+               logFile.close();
+               messageCount++;
+             }
          }
          catch(IOException ioe)
          {
            System.err.println("IOException: " + ioe.getMessage());
          }
-         messageCount++;
        
     
    } 
@@ -159,7 +160,7 @@ public class Client extends JFrame{
          {
              FileWriter logFile = new FileWriter(fileName, true); //the true will append the new data
            
-             logFile.append("===+=== " +messageCount );
+             logFile.append("|" +messageCount );
              logFile.append(System.getProperty( "line.separator" ));
              logFile.append("\n" + userName+ " - "+ message+ "\n");
              logFile.append(System.getProperty( "line.separator" ));
