@@ -19,11 +19,12 @@ SoftwareSerial mySerial(10,11);
     };
 
   long currentMessage=0;
+  long currentConversation=0;
   int j=49; //Note this MUST match the size of the dictionary entries minus 1! Larger means you will run out of the array bounds, smaller means you wont search each entry!
   int i=0;
   int k=2;
   int delayValue=200;
-  String hello = "na";
+  String hello = "na", message = "";
   int curState9=0, curState10=0, prevState9=0, prevState10=0;
   int timer=0;
   int pressed=0;
@@ -34,6 +35,28 @@ SoftwareSerial mySerial(10,11);
   String addressString  ="";
   String incomingMessage="";
   char characterIn;
+  char character;
+//******************************************************************************************************************************************************************************
+
+
+//******************************************************************************************************************************************************************************
+
+/* Okay makeAddress takes in an integer from 0-5 and returns the important address.
+ * Normally the address would be three bits, ABC. However, due to the system rounding my ints, I had to throw a significan figure out to the left of the address to keep the code from rounding
+ * In effect, the address is 1CBA where the 1 is ignored, and CBA form the correct address the system needs.
+ */
+int makeAddress(int n)
+{
+  int address=0;
+  if(n==0){address=1000;}
+  if(n==1){address=1001;}
+  if(n==2){address=1010;}
+  if(n==3){address=1011;}
+  if(n==4){address=1100;}
+  if(n==5){address=1101;}
+  return(address);
+}
+
 //******************************************************************************************************************************************************************************
 
   
@@ -44,6 +67,9 @@ void setup() {
   pinMode(A1, INPUT);//input to move forward
   pinMode(A2, INPUT);//Button to move forward a message
   pinMode(A3, INPUT);//Button to move back a message
+  pinMode(11, INPUT);//Button to move forward a conversation
+  pinMode(12, INPUT);//Button to move back a conversation
+
 
   pinMode(A4, INPUT);
   
@@ -71,8 +97,10 @@ Bail:
   int  n=0;
   if(firstPass == true)
   {
+    Serial.println("Getting first message");
     firstPass = false;
     hello = getFirstMessage();
+    Serial.println(hello);
   }
   
   while(n<hello.length()) //ensure we don't run out of bounds on the string
@@ -83,8 +111,10 @@ Bail:
     {
       if(digitalRead(A0)==1){pressed=1;}
       if(digitalRead(A1)==1){pressed=2;}
-      if(digitalRead(A2)==1){hello = forwardMessage(hello); Serial.println("returned with up a message"); goto Bail;}
-      if(digitalRead(A3)==1){hello = backMessage(hello);Serial.println("returned with down a message"); goto Bail;}
+      if(digitalRead(A2)==1){hello = changeMessage(0);Serial.println(hello);}
+      if(digitalRead(A3)==1){hello = changeMessage(1);Serial.println(hello);}
+      if(digitalRead(11)==1){hello = changeMessage(2);Serial.println(hello);}
+      if(digitalRead(12)==1){hello = changeMessage(3);Serial.println(hello);}
       delay(6);
       timer++;
     }
@@ -169,7 +199,8 @@ Bail:
 //******************************************************************************************************************************************************************************
 
 
-void makeBraille(char c, char d){
+void makeBraille(char c, char d)
+{
   int i=0;
   int k=2;  
   digitalWrite(7,0);
@@ -403,6 +434,10 @@ bool areStringsEqual(String temp1, String temp2)
 String getFirstMessage()
 {
 incomingMessage = "";
+Serial.println("Getting message with 0 |0 0.txt");
+delay(250);
+mySerial.write("0 |0 0.txt");
+delay(250);
 while(mySerial.available())
   {
     character = mySerial.read();
@@ -415,47 +450,82 @@ while(mySerial.available())
 //******************************************************************************************************************************************************************************
 
 
-String forwardMessage(String hello)
-
-while(mySerial.available()){
-    character = mySerial.read();
-    message.concat(character);
-   if(character == '#'){ // if end of message received
-     Serial.print(message); //display message and
-     message = ""; //clear buffer
-     Serial.println();
+String changeMessage(int n)
+{//currentMessage, currentConversation
+  String storage = "";
+  char outToJava = "";
+  byte buf[100];
+  int hi;
+  if(n == 0)
+  {
+    currentMessage--;
+    outToJava = outToJava + "0 |";
+    outToJava = outToJava + currentMessage;
+    outToJava = outToJava + " ";
+    outToJava = outToJava + currentConversation;
+    outToJava= outToJava+".txt";
+    mySerial.write(outToJava);
+    delay(250);
+    while(mySerial.available())
+    {
+      character = mySerial.read();
+      storage.concat(character);
+    }
   }
 
+  if(n == 1)
+  {
+    currentMessage++;
+    outToJava = outToJava + "0 |";
+    outToJava = outToJava + currentMessage;
+    outToJava = outToJava + " ";
+    outToJava = outToJava + currentConversation;
+    outToJava= outToJava+".txt";
+    mySerial.write(outToJava);
+    delay(250);
+    while(mySerial.available())
+    {
+      character = mySerial.read();
+      storage.concat(character);
+    }
+  }
 
-//******************************************************************************************************************************************************************************
+  if(n == 2)
+  {
+    currentConversation--;
+    outToJava = outToJava + "0 |";
+    outToJava = outToJava + currentMessage;
+    outToJava = outToJava + " ";
+    outToJava = outToJava + currentConversation;
+    outToJava= outToJava+".txt";
+    mySerial.write(outToJava);
+    delay(250);
+    while(mySerial.available())
+    {
+      character = mySerial.read();
+      storage.concat(character);
+    }
+  }
 
+  if(n == 3)
+  {
+    currentConversation++;
+    outToJava = outToJava + "0 |";
+    outToJava = outToJava + currentMessage;
+    outToJava = outToJava + " ";
+    outToJava = outToJava + currentConversation;
+    outToJava= outToJava+".txt";
+    mySerial.write(outToJava);
+    delay(250);
+    while(mySerial.available())
+    {
+      character = mySerial.read();
+      storage.concat(character);
+    }
+  }
 
-String backMessage(String hello)
-{
-  delay(1000);
-  Serial.println("Attempting to go down array");
-  int n=p;
-  while(!areStringsEqual(hello, messages[n]) && n>0)
-  {n--;/*Serial.println(n);*/}
-  if(n > 0){hello = setStringEqual(hello, messages[n-1]); Serial.println("Got the new message");}
-  return(hello);
+  return storage;
+
 }
 
-
 //******************************************************************************************************************************************************************************
-
-/* Okay makeAddress takes in an integer from 0-5 and returns the important address.
- * Normally the address would be three bits, ABC. However, due to the system rounding my ints, I had to throw a significan figure out to the left of the address to keep the code from rounding
- * In effect, the address is 1CBA where the 1 is ignored, and CBA form the correct address the system needs.
- */
-int makeAddress(int n)
-{
-  int address=0;
-  if(n==0){address=1000;}
-  if(n==1){address=1001;}
-  if(n==2){address=1010;}
-  if(n==3){address=1011;}
-  if(n==4){address=1100;}
-  if(n==5){address=1101;}
-  return(address);
-}

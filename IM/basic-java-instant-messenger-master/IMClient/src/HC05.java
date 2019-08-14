@@ -24,8 +24,8 @@ public class HC05 {
     int input = -1;
     String messageNumber = "|0";
     String fileNumber = "0.txt";
-    byte[] inputData = new byte[255];
-    byte[] oldInputData = new byte[255];
+    byte[] inputData = new byte[1023];
+    byte[] oldInputData = new byte[1023];
     String inputString = "";
     String[] parsedInput;
     boolean continueRead = true;
@@ -122,11 +122,18 @@ public class HC05 {
         InputStream is = streamConnection.openInputStream();
         while(continueRead == true)
         {
+          System.out.println("enter");
           while(true)
           {
+            System.out.println("reading");
+            while(is.available() <1);
+            {
+              Thread.sleep(200);
+            }
+            System.out.println("Received");
             is.read(inputData);
             System.out.println("Checking arrays");
-            if(Arrays.equals(inputData, oldInputData)==false)
+            if(Arrays.equals(inputData, oldInputData)==true)
             {
               System.out.println("Arrays weren't the same!");
               outputString = "";
@@ -145,8 +152,10 @@ public class HC05 {
               String logPath = logStoragePath + parsedInput[2];
               File conversation = new File(logPath);
               
+              System.out.println("Checking if file exists");
               if(conversation.exists())
-              {                
+              {       
+                System.out.println("File");         
                 BufferedReader reader = new BufferedReader(new FileReader(logPath));
                 String line = reader.readLine();
                 while(line!=null)
@@ -175,7 +184,7 @@ public class HC05 {
               
               oldInputData = inputData.clone();
             }
-            Thread.sleep(200);
+            Thread.sleep(10);
            
           }
         }
