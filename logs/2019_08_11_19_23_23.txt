@@ -1,9 +1,0 @@
-===+=== 0
-
-ADMIN- 
-You are now connected!
-
-===+=== 1
-
-ADMIN- hi
-

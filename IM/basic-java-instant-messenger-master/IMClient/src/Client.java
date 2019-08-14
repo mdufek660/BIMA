@@ -39,9 +39,9 @@ public class Client extends JFrame{
  public static final String DATE_FORMAT_NOW = "yyyy_MM_dd_HH_mm_ss";
  String userName = "Default";
  long messageCount = 0;
+ int logFileNumber = new File(logDirectory).listFiles().length;
  
- 
- String fileName = logDirectory+dateAndTime()+".txt";
+ String fileName = logDirectory+logFileNumber+".txt";
  File logs = new File(fileName);
  
  public static String dateAndTime() 

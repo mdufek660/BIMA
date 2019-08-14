@@ -116,7 +116,7 @@ public class Client extends JFrame{
              System.out.println(message);
              if(!message.equals("ADMIN- You are now connected!") && !message.equals("ADMIN- END"))
              {
-               logFile.append("===+=== " +messageCount );
+               logFile.append("|" +messageCount );
                logFile.append(System.getProperty( "line.separator" ));
                logFile.append("\n" + message+ "\n");
                logFile.append(System.getProperty( "line.separator" ));
@@ -160,7 +160,7 @@ public class Client extends JFrame{
          {
              FileWriter logFile = new FileWriter(fileName, true); //the true will append the new data
            
-             logFile.append("===+=== " +messageCount );
+             logFile.append("|" +messageCount );
              logFile.append(System.getProperty( "line.separator" ));
              logFile.append("\n" + userName+ " - "+ message+ "\n");
              logFile.append(System.getProperty( "line.separator" ));

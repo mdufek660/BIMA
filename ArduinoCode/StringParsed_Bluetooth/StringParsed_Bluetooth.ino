@@ -31,7 +31,7 @@ SoftwareSerial mySerial(10,11);
   bool check, written, firstPass=true;
   int potValue;
   int address = 000;
-  String addressString = "";
+  String addressString  ="";
   String incomingMessage="";
   char characterIn;
 //******************************************************************************************************************************************************************************

@@ -7,7 +7,6 @@ For setting up the framework of this IM service
 */
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 public class ClientTest {
  public static void main(String[] args) {
   Client user;
