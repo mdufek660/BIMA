@@ -7,7 +7,7 @@ Note I tried to do the code with various libraries being made but could not fix 
 */
 
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(10,11);
+SoftwareSerial mySerial(0,1);
 
   char dictionary[50][9]= //Please note if you change the first value, you MUST change j to match minus 1
     {
@@ -436,13 +436,14 @@ String getFirstMessage()
 incomingMessage = "";
 Serial.println("Getting message with 0 |0 0.txt");
 delay(250);
-mySerial.write("0 |0 0.txt");
+Serial.write("0 |0 0.txt");
 delay(250);
 while(mySerial.available())
   {
     character = mySerial.read();
     incomingMessage.concat(character);
   }
+  Serial.println(incomingMessage);
   return(incomingMessage);
 }
 

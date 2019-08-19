@@ -31,6 +31,9 @@ public class HC05 {
     boolean continueRead = true;
     String logStoragePath = "E:\\BIMA\\logs\\";
     String outputString = "";
+    int i;
+    char c;
+    int[] garbageInput;
 
     public static void main(String[] args) {
         try {
@@ -130,8 +133,24 @@ public class HC05 {
             {
               Thread.sleep(200);
             }
+            boolean testing = false;
             System.out.println("Received");
-            is.read(inputData);
+            int d = 0, z=0;
+            while( (i = is.read()) != -1)
+            {
+              if(testing == false)
+              {
+                System.out.println("In the loop");
+                testing = true;
+              }
+             d = is.read();
+             System.out.println(d);
+             Thread.sleep(1000);
+            }
+            
+             System.out.println("I is :" + i);
+             System.out.println("Input data is : "+inputData);
+            
             System.out.println("Checking arrays");
             if(Arrays.equals(inputData, oldInputData)==true)
             {
